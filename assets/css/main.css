@@ -475,7 +475,7 @@ a.boxed-btn, a.bordered-btn, a.cart-btn {
 }
 
 .breadcrumb-bg {
-  background-image: url(../new_Images/mainPic/m1.jpg);
+  background-image: url(../new_Images/Cake_Project_images/m2.jpg);
 }
 
 .breadcrumb-text p {
@@ -1361,7 +1361,7 @@ a.mobile-show.search-bar-icon:hover {
 
 ----------------------------------------------------------------------------- */
 .hero-bg {
-  background-image: url(../new_Images/mainPic/m2.jpg);
+  background-image: url(../new_Images/Cake_Project_images/M1.jpg);
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -2066,7 +2066,7 @@ a.video-play-btn {
 }
 
 .abt-bg {
-  background-image: url(../img/abt.jpg);
+  background-image: url(../new_Images/Cake_Project_images/m3.jpg);
   height: 100%;
   width: 100%;
   background-size: cover;
@@ -2158,7 +2158,7 @@ a.video-play-btn {
 }
 
 .feature-bg:after {
-  background-image: url(../img/feature-bg.jpg);
+  background-image: url(../new_Images/Cake_Project_images/sidePic.jpg);
   position: absolute;
   right: 0;
   top: 0;
@@ -2174,19 +2174,19 @@ a.video-play-btn {
 }
 
 .team-bg-1 {
-  background-image: url(../img/team/team-1.jpg);
+  background-image: url(../new_Images/Cake_Project_images/Members/member1.jpg);
 }
 
 .team-bg-2 {
-  background-image: url(../img/team/team-2.jpg);
+  background-image: url(../new_Images/Cake_Project_images/Members/Member2.jpg);
 }
 
 .team-bg-3 {
-  background-image: url(../img/team/team-3.jpg);
+  background-image: url(../new_Images/Cake_Project_images/Members/member1.jpg);
 }
 
 .team-bg-4 {
-  background-image: url(../img/team/team-4.jpg);
+  background-image: url(../img/team/team-3.jpg);
 }
 
 .team-bg {
