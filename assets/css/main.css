@@ -1866,7 +1866,9 @@ span.comment-date {
   padding-left: 17px;
   margin-bottom: 10px;
 }
-
+#logoimage{
+  width: 30rem;
+}
 .recent-posts ul li:before, .archive-posts ul li:before {
   position: absolute;
   left: 0;
@@ -1981,6 +1983,11 @@ span.comment-date {
   text-transform: capitalize;
   text-align: center;
   border: 2px solid #F28123;
+}
+#lable{
+  color: #9fcdff;
+  font-size: 20px;
+  font-family: Great Vibes, Pacifico;
 }
 
 .time-countdown .counter-column .count {
@@ -2182,7 +2189,7 @@ a.video-play-btn {
 }
 
 .team-bg-3 {
-  background-image: url(../new_Images/Cake_Project_images/Members/member1.jpg);
+  background-image: url(../new_Images/Cake_Project_images/Members/member3.jpg);
 }
 
 .team-bg-4 {
