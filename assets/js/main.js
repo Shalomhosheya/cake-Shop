@@ -166,3 +166,53 @@
 
 
 }(jQuery));
+
+$(document).ready(function() {
+    $(".defaultclick").on('click', function(event) {
+        // Prevent the default behavior (i.e., prevent the page from refreshing)
+        event.preventDefault();
+
+        // Get product details
+        const productName = $(this).closest('.single-product-item').find('.nameTitleshop').text();
+        const productPrice = $(this).closest('.single-product-item').find('.shop_price').text();
+
+        console.log("Product Name:", productName);  // Debugging log
+        console.log("Product Price:", productPrice);  // Debugging log
+
+        // AJAX code to send the data to the server
+        $.ajax({
+            url: 'http://localhost:8080/product/save',
+            type: 'POST',
+            data: JSON.stringify({
+                productName: productName,
+                price: productPrice
+            }),
+            contentType: 'application/json',
+            success: function(response) {
+                console.log('Success:', response);
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX error:', status, error);
+            }
+        });
+       getAll();
+    });
+});
+
+const getAll = () =>{
+    $.ajax({
+        url: 'http://localhost:8080/customer/product',
+        type: 'GET',
+        success: function(response) {
+            response.forEach(function (product){
+                console.log(product.productName);
+                console.log(product.price);
+            })
+        },
+        error: function(xhr, status, error) {
+            console.error('AJAX error:', status, error);
+        }
+    });
+}
+
+
