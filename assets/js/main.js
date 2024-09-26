@@ -215,4 +215,21 @@ const getAll = () =>{
     });
 }
 
+// Show the form when the page loads
+window.onload = function() {
+    document.getElementById("siginform").style.display = "flex";
+};
 
+// Close the form when the "Close" button is clicked
+document.getElementById("closeForm").addEventListener("click", function() {
+    document.getElementById("siginform").style.display = "none";
+});
+document.getElementById("accIcon").addEventListener("click", function() {
+    document.getElementById("siginform").style.display = "flex";
+});
+/*
+document.getElementById("accIcon2").addEventListener("click", function() {
+    document.getElementById("siginform").style.display = "flex";
+});
+
+*/

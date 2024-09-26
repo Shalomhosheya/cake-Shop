@@ -30,10 +30,33 @@
 	<link rel="stylesheet" href="assets/css/main.css">
 	<!-- responsive -->
 	<link rel="stylesheet" href="assets/css/responsive.css">
+	<link
+			href="https://cdn.jsdelivr.net/npm/remixicon@3.4.0/fonts/remixicon.css"
+			rel="stylesheet"
+	/>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
 </head>
 <body>
-	
+<!-- Signup Form Popup -->
+<div class="siginform" id="siginform">
+	<div class="form-content">
+		<h2>Sign In</h2>
+		<p>Fill in your details</p>
+		<!-- Add your form fields here -->
+		<div class="mb-3">
+			<label for="exampleInputEmail1" class="form-label">Email address</label>
+			<input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+		</div>
+		<div class="mb-3">
+			<label for="exampleInputPassword1" class="form-label">Password</label>
+			<input type="password" class="form-control" id="exampleInputPassword1">
+		</div>
+		<button id="closeForm">Close</button>
+		<button id="">Sign</button>
+	</div>
+</div>
+
 	<!--PreLoader-->
     <div class="loader">
         <div class="loader-inner">
@@ -43,6 +66,7 @@
     <!--PreLoader Ends-->
 	
 	<!-- header -->
+
 	<div class="top-header-area" id="sticker">
 		<div class="container">
 			<div class="row">
@@ -76,6 +100,7 @@
 <!--										<li><a href="extra/news.html">News</a></li>-->
 										<li><a href="shop.html">Shop</a></li>
 									</ul>
+
 								</li>
 								<!--<li><a href="extra/news.html">News</a>
 									<ul class="sub-menu">
@@ -95,12 +120,15 @@
 								<li>
 									<div class="header-icons">
 										<a class="shopping-cart" href="cart.html"><i class="fas fa-shopping-cart"></i></a>
-										<a class="mobile-hide search-bar-icon" href="#"><i class="fas fa-search"></i></a>
+										<i class="ri-account-box-fill accIcon" id="accIcon"></i>
+										</a>
 									</div>
 								</li>
 							</ul>
 						</nav>
+
 						<a class="mobile-show search-bar-icon" href="#"><i class="fas fa-search"></i></a>
+						<i class="ri-account-box-fill mobile-show search-bar-icon"id="accIcon2"></i>
 						<div class="mobile-menu"></div>
 						<!-- menu end -->
 					</div>
@@ -145,7 +173,9 @@
 	<!-- end breadcrumb section -->
 
 	<!-- products -->
+
 	<div class="product-section mt-150 mb-150">
+
 		<div class="container">
 
 			<div class="row">
@@ -163,7 +193,9 @@
             </div>
 
 			<div class="row product-lists">
+
 				<div class="col-lg-4 col-md-6 text-center strawberry">
+
 					<div class="single-product-item">
 						<div class="product-image">
 							<a href="single-product.html"><img src="assets/new_Images/Cake_Project_images/WhatsApp%20Image%202024-09-11%20at%2010.46.51_b34ba8a5.jpg" alt=""></a>
