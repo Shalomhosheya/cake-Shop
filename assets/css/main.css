@@ -1454,18 +1454,7 @@ html, body {
   bottom: -15%;
   height: 600px;
 }
-.siginform {
-  display: none; /* Initially hidden */
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
-  z-index: 9999; /* High z-index to ensure it appears on top */
-  justify-content: center;
-  align-items: center;
-}
+
 
 input[type="submit"] {
   background-color: #F28123;
@@ -2773,6 +2762,30 @@ table.order-details tbody td {
   display: table-cell;
   vertical-align: middle;
   width: 100%;
+}
+.siginform {
+  display: none; /* Initially hidden */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+  z-index: 9999; /* High z-index to ensure it appears on top */
+  justify-content: center;
+  align-items: center;
+}
+.signUpForm {
+  display: none; /* Initially hidden */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+  z-index: 9999; /* High z-index to ensure it appears on top */
+  justify-content: center;
+  align-items: center;
 }
 .accIcon{
   font-size: 35px;

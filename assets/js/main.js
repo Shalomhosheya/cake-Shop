@@ -224,12 +224,119 @@ window.onload = function() {
 document.getElementById("closeForm").addEventListener("click", function() {
     document.getElementById("siginform").style.display = "none";
 });
+document.getElementById("closeForm").addEventListener("click", function() {
+    document.getElementById("siginform").style.display = "none";
+});
+document.getElementById("regBTN").addEventListener("click", function() {
+    document.getElementById("siginform").style.display = "none";
+    document.getElementById("signUpForm").style.display = "flex";
+});
+document.getElementById("backBtn").addEventListener("click", function() {
+    document.getElementById("siginform").style.display = "flex";
+    document.getElementById("signUpForm").style.display = "none";
+});
+document.getElementById("signBtn2").addEventListener("click", function() {
+    const username = document.getElementById("exampleInputEmail3").value;
+    const email = document.getElementById("exampleInputEmail4").value;
+    const password = document.getElementById("exampleInputEmail5").value;
+    const phone_number = document.getElementById("exampleInputEmail6").value;
+    console.log(username, password, email, phone_number);
+
+
+    $.ajax({
+        url: 'http://localhost:8080/user/save',
+        type: 'POST',
+        data: JSON.stringify({
+            username :username,
+            email: email,
+            password: password,
+            phone_number:phone_number
+        }),
+        contentType: 'application/json',
+        success: function(response) {
+            console.log('Success:', response);
+        document.getElementById("accounNameSet").innerText=username;
+            document.getElementById("siginform").style.display = "none";
+            document.getElementById("signUpForm").style.display = "none";
+
+        },
+        error: function(xhr, status, error) {
+            console.error('AJAX error:', status, error);
+            alert("Retry filled information is Wrong Fertile")
+        }
+    });
+
+});
+
 document.getElementById("accIcon").addEventListener("click", function() {
     document.getElementById("siginform").style.display = "flex";
 });
-/*
 document.getElementById("accIcon2").addEventListener("click", function() {
     document.getElementById("siginform").style.display = "flex";
 });
 
+
+document.getElementById("signBtn1").addEventListener("click", function() {
+    const email = document.getElementById("exampleInputEmail1").value;
+    const password = document.getElementById("exampleInputEmail2").value;
+
+    $.ajax({
+        url: 'http://localhost:8080/user/select',
+        type: 'GET',
+        success: function(response) {
+            let loginSuccess = false; // Variable to track if login was successful
+
+            response.forEach(function(user) {
+                console.log(user.username);
+                console.log(user.email);
+                console.log(user.password);
+                console.log(user.phone_number);
+
+                if (email === user.email && password === user.password) {
+                    document.getElementById("accounNameSet").innerText = user.username;
+                    document.getElementById("siginform").style.display = "none";
+                    document.getElementById("signUpForm").style.display = "none";
+                    loginSuccess = true; // Set login success to true
+                }
+            });
+
+            // If login wasn't successful, show the alert
+            if (!loginSuccess) {
+                alert("Login Failed, check the data entered.");
+            }
+        },
+        error: function(xhr, status, error) {
+            alert("Login Failed, check the data entered2.");
+            console.error('AJAX error:', status, error);
+        }
+    });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+document.addEventListener('DOMContentLoaded', function () {
+    // For desktop view account icon
+    document.getElementById("accIcon").addEventListener("click", function () {
+        document.getElementById("siginform").style.display = "flex";
+    });
+
+    // For mobile view account icon
+    document.getElementById("accIcon2").addEventListener("click", function () {
+        document.getElementById("siginform").style.display = "flex";
+    });
+});
 */
+

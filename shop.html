@@ -49,11 +49,46 @@
 			<input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
 		</div>
 		<div class="mb-3">
-			<label for="exampleInputPassword1" class="form-label">Password</label>
-			<input type="password" class="form-control" id="exampleInputPassword1">
+			<label for="exampleInputEmail2" class="form-label">Password</label>
+			<input type="password" class="form-control" id="exampleInputEmail2">
 		</div>
+
+		<nav aria-label="">
+			<ol class="">
+				<a href="#"id="regBTN">SignUp for New Account</a>
+			</ol>
+		</nav>
 		<button id="closeForm">Close</button>
-		<button id="">Sign</button>
+		<button id="signBtn1">Sign</button>
+	</div>
+</div>
+<div class="signUpForm" id="signUpForm">
+	<div class="form-content">
+		<h2>Sign Up</h2>
+		<p>Fill in your details</p>
+		<!-- Add your form fields here -->
+		<div class="mb-3">
+			<label for="exampleInputEmail1" class="form-label">User Name</label>
+			<input type="email" class="form-control" id="exampleInputEmail3" aria-describedby="emailHelp">
+		</div>
+		<div class="mb-3">
+			<label for="exampleInputEmail1" class="form-label">Email address</label>
+			<input type="email" class="form-control" id="exampleInputEmail4" aria-describedby="emailHelp">
+		</div>
+
+		<div class="mb-3">
+			<label for="exampleInputEmail5" class="form-label">Password</label>
+			<input type="password" class="form-control" id="exampleInputEmail5">
+		</div>
+		<div class="mb-3">
+			<label for="exampleInputEmail1" class="form-label">Phone number</label>
+			<input type="email" class="form-control" id="exampleInputEmail6" aria-describedby="emailHelp">
+		</div>
+
+
+
+		<button id="backBtn">Back</button>
+		<button id="signBtn2">Sign In</button>
 	</div>
 </div>
 
@@ -120,15 +155,15 @@
 								<li>
 									<div class="header-icons">
 										<a class="shopping-cart" href="cart.html"><i class="fas fa-shopping-cart"></i></a>
-										<i class="ri-account-box-fill accIcon" id="accIcon"></i>
-										</a>
+										<i class="ri-account-box-fill accIcon" id="accIcon"></i> <!-- Changed to correct id accIcon -->
+										<h5 style="background-color: whitesmoke"id="accounNameSet"></h5>
 									</div>
 								</li>
+
 							</ul>
 						</nav>
-
 						<a class="mobile-show search-bar-icon" href="#"><i class="fas fa-search"></i></a>
-						<i class="ri-account-box-fill mobile-show search-bar-icon"id="accIcon2"></i>
+						<i class="ri-account-box-fill mobile-show search-bar-icon" id="accIcon2"></i> <!-- Mobile view -->
 						<div class="mobile-menu"></div>
 						<!-- menu end -->
 					</div>
