@@ -2802,3 +2802,7 @@ table.order-details tbody td {
 #closeForm {
   margin-top: 20px;
 }
+#logoutBtn{
+  display: flex;
+
+}

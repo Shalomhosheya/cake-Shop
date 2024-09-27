@@ -255,9 +255,8 @@ document.getElementById("signBtn2").addEventListener("click", function() {
         contentType: 'application/json',
         success: function(response) {
             console.log('Success:', response);
-        document.getElementById("accounNameSet").innerText=username;
-            document.getElementById("siginform").style.display = "none";
-            document.getElementById("signUpForm").style.display = "none";
+           document.getElementById("siginform").style.display = "flex";
+           document.getElementById("signUpForm").style.display = "none";
 
         },
         error: function(xhr, status, error) {
@@ -275,7 +274,6 @@ document.getElementById("accIcon2").addEventListener("click", function() {
     document.getElementById("siginform").style.display = "flex";
 });
 
-
 document.getElementById("signBtn1").addEventListener("click", function() {
     const email = document.getElementById("exampleInputEmail1").value;
     const password = document.getElementById("exampleInputEmail2").value;
@@ -287,15 +285,19 @@ document.getElementById("signBtn1").addEventListener("click", function() {
             let loginSuccess = false; // Variable to track if login was successful
 
             response.forEach(function(user) {
-                console.log(user.username);
-                console.log(user.email);
-                console.log(user.password);
-                console.log(user.phone_number);
-
                 if (email === user.email && password === user.password) {
+                    // Set the username in the DOM
                     document.getElementById("accounNameSet").innerText = user.username;
-                    document.getElementById("siginform").style.display = "none";
-                    document.getElementById("signUpForm").style.display = "none";
+                    document.getElementById("siginform").style.display = "none"; // Hide sign-in form
+                    document.getElementById("signUpForm").style.display = "none"; // Hide sign-up form
+
+                    // Save login data to localStorage
+                    localStorage.setItem("loggedInUser", JSON.stringify(user));
+
+                    // Show logout button, hide login button and account icon
+                    document.getElementById("logoutBtn").style.display = "flex";
+                    document.getElementById("accIcon").style.display = "none"; // Hide the account icon
+
                     loginSuccess = true; // Set login success to true
                 }
             });
@@ -306,15 +308,45 @@ document.getElementById("signBtn1").addEventListener("click", function() {
             }
         },
         error: function(xhr, status, error) {
-            alert("Login Failed, check the data entered2.");
+            alert("Login Failed, check the data entered.");
             console.error('AJAX error:', status, error);
         }
     });
 });
 
+window.onload = function() {
+    const loggedInUser = localStorage.getItem("loggedInUser");
+
+    if (loggedInUser) {
+        const user = JSON.parse(loggedInUser);
+        // Set the username in the DOM if the user is logged in
+        document.getElementById("accounNameSet").innerText = user.username;
+        document.getElementById("siginform").style.display = "none"; // Hide sign-in form
+        document.getElementById("signUpForm").style.display = "none"; // Hide sign-up form
+        document.getElementById("logoutBtn").style.display = "flex"; // Show logout button
+        document.getElementById("accIcon").style.display = "none"; // Hide account icon (since the user is logged in)
+    } else {
+        // If no user is logged in, show the account icon and hide the logout button
+        document.getElementById("logoutBtn").style.display = "none";
+        document.getElementById("accIcon").style.display = "inline"; // Show account icon (for login)
+    }
+};
+
+// Logout function
+document.getElementById("logoutBtn").addEventListener("click", function() {
+    localStorage.removeItem("loggedInUser"); // Remove user from localStorage
+    location.reload(); // Refresh the page to reset the login status
+    document.getElementById("accIcon").style.display = "flex"; // Show the account icon after logging out
+});
 
 
-
+// Example of login button click (if needed)
+/*
+document.getElementById("loginBtn").addEventListener("click", function() {
+    // Show login form or redirect to login page
+    document.getElementById("siginform").style.display = "flex";
+});
+*/
 
 
 
