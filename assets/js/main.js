@@ -52,7 +52,6 @@
             }
         });
 
-        // logo carousel
         $(".logo-carousel-inner").owlCarousel({
             items: 4,
             loop: true,
@@ -75,8 +74,7 @@
             }
         });
 
-        // count down
-        if($('.time-countdown').length){  
+        if($('.time-countdown').length){
             $('.time-countdown').each(function() {
             var $this = $(this), finalDate = $(this).data('countdown');
             $this.countdown(finalDate, function(event) {
@@ -85,7 +83,6 @@
          });
         }
 
-        // projects filters isotop
         $(".product-filters li").on('click', function () {
             
             $(".product-filters li").removeClass("active");
@@ -99,10 +96,8 @@
             
         });
         
-        // isotop inner
         $(".product-lists").isotope();
 
-        // magnific popup
         $('.popup-youtube').magnificPopup({
             disableOn: 700,
             type: 'iframe',
@@ -122,7 +117,6 @@
             }
         });
 
-        // homepage slides animations
         $(".homepage-slider").on("translate.owl.carousel", function(){
             $(".hero-text-tablecell .subtitle").removeClass("animated fadeInUp").css({'opacity': '0'});
             $(".hero-text-tablecell h1").removeClass("animated fadeInUp").css({'opacity': '0', 'animation-delay' : '0.3s'});
@@ -142,7 +136,6 @@
             topSpacing: 0
         });
 
-        //mean menu
         $('.main-menu').meanmenu({
             meanMenuContainer: '.mobile-menu',
             meanScreenWidth: "992"
@@ -167,60 +160,11 @@
 
 }(jQuery));
 
-$(document).ready(function() {
-    $(".defaultclick").on('click', function(event) {
-        // Prevent the default behavior (i.e., prevent the page from refreshing)
-        event.preventDefault();
 
-        // Get product details
-        const productName = $(this).closest('.single-product-item').find('.nameTitleshop').text();
-        const productPrice = $(this).closest('.single-product-item').find('.shop_price').text();
-
-        console.log("Product Name:", productName);  // Debugging log
-        console.log("Product Price:", productPrice);  // Debugging log
-
-        // AJAX code to send the data to the server
-        $.ajax({
-            url: 'http://localhost:8080/product/save',
-            type: 'POST',
-            data: JSON.stringify({
-                productName: productName,
-                price: productPrice
-            }),
-            contentType: 'application/json',
-            success: function(response) {
-                console.log('Success:', response);
-            },
-            error: function(xhr, status, error) {
-                console.error('AJAX error:', status, error);
-            }
-        });
-       getAll();
-    });
-});
-
-const getAll = () =>{
-    $.ajax({
-        url: 'http://localhost:8080/customer/product',
-        type: 'GET',
-        success: function(response) {
-            response.forEach(function (product){
-                console.log(product.productName);
-                console.log(product.price);
-            })
-        },
-        error: function(xhr, status, error) {
-            console.error('AJAX error:', status, error);
-        }
-    });
-}
-
-// Show the form when the page loads
 window.onload = function() {
     document.getElementById("siginform").style.display = "flex";
 };
 
-// Close the form when the "Close" button is clicked
 document.getElementById("closeForm").addEventListener("click", function() {
     document.getElementById("siginform").style.display = "none";
 });
@@ -267,42 +211,53 @@ document.getElementById("signBtn2").addEventListener("click", function() {
 
 });
 
+
 document.getElementById("accIcon").addEventListener("click", function() {
     document.getElementById("siginform").style.display = "flex";
 });
 document.getElementById("accIcon2").addEventListener("click", function() {
     document.getElementById("siginform").style.display = "flex";
 });
-
+var userID;
+// Event listener for login form submission
 document.getElementById("signBtn1").addEventListener("click", function() {
-    const email = document.getElementById("exampleInputEmail1").value;
-    const password = document.getElementById("exampleInputEmail2").value;
+    const email = document.getElementById("exampleInputEmail1").value.trim();
+    const password = document.getElementById("exampleInputEmail2").value.trim();
+
+    // Basic validation for empty fields
+    if (!email || !password) {
+        alert("Please enter both email and password.");
+        return;
+    }
 
     $.ajax({
         url: 'http://localhost:8080/user/select',
         type: 'GET',
         success: function(response) {
-            let loginSuccess = false; // Variable to track if login was successful
+            console.log("Response received:", response); // Log the full response to see its structure
+
+            let loginSuccess = false;
 
             response.forEach(function(user) {
+                console.log("Checking user:", user); // Log each user to ensure 'userid' exists
+
+                // Check if email and password match
                 if (email === user.email && password === user.password) {
-                    // Set the username in the DOM
                     document.getElementById("accounNameSet").innerText = user.username;
                     document.getElementById("siginform").style.display = "none"; // Hide sign-in form
                     document.getElementById("signUpForm").style.display = "none"; // Hide sign-up form
 
-                    // Save login data to localStorage
-                    localStorage.setItem("loggedInUser", JSON.stringify(user));
+                    localStorage.setItem("loggedInUser", JSON.stringify(user)); // Store user in localStorage
 
-                    // Show logout button, hide login button and account icon
                     document.getElementById("logoutBtn").style.display = "flex";
                     document.getElementById("accIcon").style.display = "none"; // Hide the account icon
 
-                    loginSuccess = true; // Set login success to true
+                    userID = user.userid; // Store the user ID for later use
+                    console.log("Logged in User ID:", userID);
+                    loginSuccess = true;
                 }
             });
 
-            // If login wasn't successful, show the alert
             if (!loginSuccess) {
                 alert("Login Failed, check the data entered.");
             }
@@ -314,30 +269,109 @@ document.getElementById("signBtn1").addEventListener("click", function() {
     });
 });
 
+// Event listener for product click (ensures user is logged in)
+$(document).ready(function() {
+    $(".defaultclick").on('click', function(event) {
+        event.preventDefault();
+
+        if (!checkIfLoggedIn()) return;  // Prevents function from proceeding if user is not logged in
+
+        const productName = $(this).closest('.single-product-item').find('.nameTitleshop').text();
+        const productPrice = $(this).closest('.single-product-item').find('.shop_price').text();
+
+        console.log("Product Name:", productName);
+        console.log("Product price:", productPrice);
+        console.log("Product user:", userID);
+
+        if (!userID) {
+            alert("You must be logged in to save a product.");
+            return;
+        }
+
+        $.ajax({
+            url: 'http://localhost:8080/product/save',
+            type: 'POST',
+            data: JSON.stringify({
+                productName: productName,
+                price: productPrice,
+                userid: userID // Ensure userID is set
+            }),
+            contentType: 'application/json',
+            success: function(response) {
+                console.log('Success:', response);
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX error:', status, error);
+            }
+        });
+
+        getAll();
+    });
+});
+
+function checkIfLoggedIn() {
+    const loggedInUser = localStorage.getItem("loggedInUser");
+    if (!loggedInUser) {
+        alert("Please log in to the account");
+        return false;
+    }
+    return true;
+}
+const getAll = () => {
+    $.ajax({
+        url: 'http://localhost:8080/customer/product',
+        type: 'GET',
+        success: function(response) {
+            response.forEach(function(product) {
+                console.log(product.productName);
+                console.log(product.price);
+            });
+        },
+        error: function(xhr, status, error) {
+            console.error('AJAX error:', status, error);
+        }
+    });
+};
+
 window.onload = function() {
     const loggedInUser = localStorage.getItem("loggedInUser");
 
     if (loggedInUser) {
         const user = JSON.parse(loggedInUser);
-        // Set the username in the DOM if the user is logged in
         document.getElementById("accounNameSet").innerText = user.username;
         document.getElementById("siginform").style.display = "none"; // Hide sign-in form
         document.getElementById("signUpForm").style.display = "none"; // Hide sign-up form
         document.getElementById("logoutBtn").style.display = "flex"; // Show logout button
         document.getElementById("accIcon").style.display = "none"; // Hide account icon (since the user is logged in)
     } else {
-        // If no user is logged in, show the account icon and hide the logout button
         document.getElementById("logoutBtn").style.display = "none";
         document.getElementById("accIcon").style.display = "inline"; // Show account icon (for login)
     }
 };
 
-// Logout function
 document.getElementById("logoutBtn").addEventListener("click", function() {
-    localStorage.removeItem("loggedInUser"); // Remove user from localStorage
-    location.reload(); // Refresh the page to reset the login status
-    document.getElementById("accIcon").style.display = "flex"; // Show the account icon after logging out
+    localStorage.removeItem("loggedInUser");
+    location.reload(); // Reload page to reset the state
+    document.getElementById("accIcon").style.display = "flex";
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // Example of login button click (if needed)
