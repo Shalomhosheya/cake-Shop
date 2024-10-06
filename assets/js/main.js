@@ -218,7 +218,11 @@ document.getElementById("accIcon").addEventListener("click", function() {
 document.getElementById("accIcon2").addEventListener("click", function() {
     document.getElementById("siginform").style.display = "flex";
 });
-var userID;
+
+
+var userID;//save this in the localstorage when page reload
+
+
 // Event listener for login form submission
 document.getElementById("signBtn1").addEventListener("click", function() {
     const email = document.getElementById("exampleInputEmail1").value.trim();
@@ -294,7 +298,7 @@ $(document).ready(function() {
             data: JSON.stringify({
                 productName: productName,
                 price: productPrice,
-                userid: userID // Ensure userID is set
+                userid: userID // Even page reload user id comes
             }),
             contentType: 'application/json',
             success: function(response) {
@@ -319,7 +323,7 @@ function checkIfLoggedIn() {
 }
 const getAll = () => {
     $.ajax({
-        url: 'http://localhost:8080/customer/product',
+        url: 'http://localhost:8080/product/select',
         type: 'GET',
         success: function(response) {
             response.forEach(function(product) {
@@ -343,6 +347,9 @@ window.onload = function() {
         document.getElementById("signUpForm").style.display = "none"; // Hide sign-up form
         document.getElementById("logoutBtn").style.display = "flex"; // Show logout button
         document.getElementById("accIcon").style.display = "none"; // Hide account icon (since the user is logged in)
+
+        userID = user.userid; // Set the userID from localStorage
+        console.log("UserID restored from localStorage:", userID);
     } else {
         document.getElementById("logoutBtn").style.display = "none";
         document.getElementById("accIcon").style.display = "inline"; // Show account icon (for login)
