@@ -336,91 +336,7 @@ function setToCartTable(userId) {
     });
 }
 
-// Function to populate the cart table
-function populateCartTable(products) {
-    // Clear the existing table body before appending new rows
-    $('.cart-table tbody').empty();
 
-    products.forEach(function(product, index) {
-        const productRow = `
-            <tr class="table-body-row" data-index="${index}">
-                <td class="product-remove">
-                    <button class="remove-product" data-index="${index}">Remove</button> <!-- Remove product button -->
-                </td>
-                <td class="product-name">${product.productName}</td> <!-- Set the product name -->
-                <td class="product-price">$${product.price.toFixed(2)}</td> <!-- Set the product price -->
-                <td class="product-quantity">
-                    <input type="number" value="1" min="1">
-                </td>
-                <td class="product-total">$${product.price.toFixed(2)}</td> <!-- Total initially same as price -->
-            </tr>
-        `;
-
-        // Append the new row to the table body
-        $('.cart-table tbody').append(productRow);
-    });
-
-    // Attach click event to the "Remove" buttons
-    $('.remove-product').on('click', function() {
-        const productIndex = $(this).data('index'); // Get the index of the product to remove
-
-        // Get the current cart data from localStorage
-        let cartProducts = JSON.parse(localStorage.getItem('cartProducts')) || [];
-
-        // Remove the product at the specified index
-        cartProducts.splice(productIndex, 1);
-
-        // Update localStorage with the modified cart data
-        localStorage.setItem('cartProducts', JSON.stringify(cartProducts));
-
-        // Repopulate the cart table with the updated cart data
-        populateCartTable(cartProducts);
-    });
-}
-
-// Function to load cart data from localStorage on page load
-function loadCartFromLocalStorage() {
-    const storedCart = localStorage.getItem('cartProducts');
-
-    if (storedCart) {
-        const cartProducts = JSON.parse(storedCart);
-        populateCartTable(cartProducts); // Repopulate the cart table
-    }
-}
-
-// Call this function when the page loads to check for saved cart data
-$(document).ready(function() {
-    // Check if there's cart data saved in localStorage and load it
-    loadCartFromLocalStorage();
-});
-
-
-// Function to retrieve data from localStorage (if needed)
-function loadCartFromLocalStorage() {
-    const cartData = localStorage.getItem('cartProducts');
-    if (cartData) {
-        const products = JSON.parse(cartData);
-        products.forEach(function(product) {
-            const productRow = `
-                <tr class="table-body-row">
-                    <td class="product-remove">
-<!--                        <a href="#"><i class="far fa-window-close"></i></a>-->
-                         <button>Remove</button>
-                    </td>
-                    <td class="product-name">${product.productName}</td>
-                    <td class="product-price">${product.price}</td>
-                    <td class="product-quantity">
-                        <input type="number" placeholder="0">
-                    </td>
-                    <td class="product-total"></td>
-                </tr>
-            `;
-
-            // Append the product row to the table
-            $('.cart-table tbody').append(productRow);
-        });
-    }
-}
 
 
 function checkIfLoggedIn() {
@@ -447,6 +363,7 @@ const getAll = () => {
     });
 };
 
+
 window.onload = function() {
     const loggedInUser = localStorage.getItem("loggedInUser");
 
@@ -472,9 +389,109 @@ document.getElementById("logoutBtn").addEventListener("click", function() {
     document.getElementById("accIcon").style.display = "flex";
 });
 
+// Function to populate the cart table
+function populateCartTable(products) {
+    // Clear the existing table body before appending new rows
+    $('.cart-table tbody').empty();
+
+    products.forEach(function(product, index) {
+        const productRow = `
+            <tr class="table-body-row" data-index="${index}">
+                <td class="product-remove">
+                    <button class="remove-product" id="removeBTN" data-id="${product.id}" data-index="${index}">Remove</button> <!-- Remove product button -->
+                </td>
+                <td class="product-name">${product.productName}</td> <!-- Set the product name -->
+                <td class="product-price">Rs ${product.price.toFixed(2)}</td> <!-- Set the product price -->
+                <td class="product-quantity">
+                    <input type="number" value="1" min="1">
+                </td>
+                <td class="product-total">Rs ${product.price.toFixed(2)}</td> <!-- Total initially same as price -->
+            </tr>
+        `;
+
+        // Append the new row to the table body
+        $('.cart-table tbody').append(productRow);
+    });
+
+    // Attach click event to the "Remove" buttons
+    $('.remove-product').on('click', function() {
+        const productId = $(this).data('id'); // Get the product id
+        const productIndex = $(this).data('index'); // Get the index of the product to remove
+
+        // Get the current cart data from localStorage
+        let cartProducts = JSON.parse(localStorage.getItem('cartProducts')) || [];
+
+        // Remove the product from the cart in localStorage
+        cartProducts.splice(productIndex, 1);
+
+        // Update localStorage with the modified cart data
+        localStorage.setItem('cartProducts', JSON.stringify(cartProducts));
+
+        // Repopulate the cart table with the updated cart data
+        populateCartTable(cartProducts);
+
+        // Send a DELETE request to the server to remove the product from the database
+        $.ajax({
+            url: 'http://localhost:8080/product/' + encodeURIComponent(productId), // Send the product ID to delete
+            type: 'DELETE',
+            success: function(response) {
+                console.log('Product deleted successfully from the database');
+                // You can handle any additional success logic here, e.g., showing a success message
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX error:', status, error);
+            }
+        });
+    });
+}
+
+// Function to load cart data from localStorage on page load
+function loadCartFromLocalStorage() {
+    const storedCart = localStorage.getItem('cartProducts');
+
+    if (storedCart) {
+        const cartProducts = JSON.parse(storedCart);
+        populateCartTable(cartProducts); // Repopulate the cart table
+    }
+}
+
+// Call this function when the page loads to check for saved cart data
+$(document).ready(function() {
+    // Check if there's cart data saved in localStorage and load it
+    loadCartFromLocalStorage();
+});
 
 
+// Function to retrieve data from localStorage (if needed)
+/*function loadCartFromLocalStorage() {
+    const cartData = localStorage.getItem('cartProducts');
+    if (cartData) {
+        const products = JSON.parse(cartData);
+        products.forEach(function(product) {
+            const productRow = `
+                <tr class="table-body-row">
+                    <td class="product-remove">
+<!--                        <a href="#"><i class="far fa-window-close"></i></a>-->
+                         <button id="removeBTN">Remove</button>
+                    </td>
+                    <td class="product-name">${product.productName}</td>
+                    <td class="product-price">${product.price}</td>
+                    <td class="product-quantity">
+                        <input type="number" placeholder="0">
+                    </td>
+                    <td class="product-total"></td>
+                </tr>
+            `;
 
+            // Append the product row to the table
+            $('.cart-table tbody').append(productRow);
+        });
+    }
+}*/
+
+document.getElementById("removeBTN").addEventListener('click',function (){
+    console.log("print");
+})
 
 
 
