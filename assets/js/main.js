@@ -343,6 +343,7 @@ function checkIfLoggedIn() {
     const loggedInUser = localStorage.getItem("loggedInUser");
     if (!loggedInUser) {
         alert("Please log in to the account");
+        document.getElementById("siginform").style.display="flex";
         return false;
     }
     return true;
@@ -488,12 +489,6 @@ $(document).ready(function() {
         });
     }
 }*/
-
-document.getElementById("removeBTN").addEventListener('click',function (){
-    console.log("print");
-})
-
-
 
 
 
