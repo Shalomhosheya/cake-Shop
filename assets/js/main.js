@@ -404,7 +404,7 @@ function populateCartTable(products) {
                 <td class="product-name">${product.productName}</td> <!-- Set the product name -->
                 <td class="product-price">Rs ${product.price.toFixed(2)}</td> <!-- Set the product price -->
                 <td class="product-quantity">
-                    <input type="number" value="1" min="1">
+                    <input type="number" class="quantity-input" value="1" min="1" data-index="${index}" data-price="${product.price.toFixed(2)}"> <!-- Create formula when increasing amount -->
                 </td>
                 <td class="product-total">Rs ${product.price.toFixed(2)}</td> <!-- Total initially same as price -->
             </tr>
@@ -437,14 +437,25 @@ function populateCartTable(products) {
             type: 'DELETE',
             success: function(response) {
                 console.log('Product deleted successfully from the database');
-                // You can handle any additional success logic here, e.g., showing a success message
             },
             error: function(xhr, status, error) {
                 console.error('AJAX error:', status, error);
             }
         });
     });
+
+    // Attach change event to the quantity input
+    $('.quantity-input').on('input', function() {
+        const index = $(this).data('index'); // Get the index of the product
+        const price = parseFloat($(this).data('price')); // Get the price of the product
+        const quantity = parseInt($(this).val()); // Get the selected quantity
+        const newTotal = price * quantity; // Calculate the new total
+
+        // Update the total price for this product in the table
+        $(this).closest('tr').find('.product-total').text('Rs ' + newTotal.toFixed(2));
+    });
 }
+
 
 // Function to load cart data from localStorage on page load
 function loadCartFromLocalStorage() {
