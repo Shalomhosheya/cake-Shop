@@ -532,17 +532,17 @@ document.getElementById("loginBtn").addEventListener("click", function() {
 
 
 
-/*
 document.addEventListener('DOMContentLoaded', function () {
     // For desktop view account icon
     document.getElementById("accIcon").addEventListener("click", function () {
         document.getElementById("siginform").style.display = "flex";
+        console.log("print");
     });
 
     // For mobile view account icon
     document.getElementById("accIcon2").addEventListener("click", function () {
         document.getElementById("siginform").style.display = "flex";
+        console.log("print");
     });
 });
-*/
 
