@@ -306,6 +306,7 @@ $(document).ready(function() {
                 console.log('Success:', response);
                 alert("Product added the Cart")
                 setToCartTable(userID);  // Pass userID to the setToCartTable function
+                
             },
             error: function(xhr, status, error) {
                 console.error('AJAX error:', status, error);
@@ -315,7 +316,6 @@ $(document).ready(function() {
         getAll();
     });
 });
-
 // Updated setToCartTable function to send userId as a query parameter
 // Function to fetch cart data and populate the table
 function setToCartTable(userId) {
@@ -330,6 +330,7 @@ function setToCartTable(userId) {
 
             // Populate the table with the response data
             populateCartTable(response);
+            
         },
         error: function(xhr, status, error) {
             console.error('AJAX error:', status, error);
@@ -391,6 +392,7 @@ document.getElementById("logoutBtn").addEventListener("click", function() {
     document.getElementById("accIcon").style.display = "flex";
 });
 
+
 // Function to populate the cart table
 function populateCartTable(products) {
     // Clear the existing table body before appending new rows
@@ -416,7 +418,7 @@ function populateCartTable(products) {
     function calculateTotal() {
         var total = 0;
         $(".product-total").each(function() {
-            let priceText = $(this).text().replace("Rs ", ""); // Fix NaN issue
+            let priceText = $(this).text().replace("Rs ", "");
             let price = parseFloat(priceText);
     
             if (!isNaN(price)) { 
@@ -424,21 +426,18 @@ function populateCartTable(products) {
             }
         });
     
-        // Store total in localStorage
-        localStorage.setItem("total", total);
-    
-        // Update the UI
-        $(".cartTot").text(total.toFixed(2));
+        localStorage.setItem("cartTotal", total); // Store total in localStorage
+        $(".cartTot").text(total.toFixed(2)); // Update UI
     }
     
-    // Load total from localStorage when page loads
+    // Load saved total from localStorage
     $(document).ready(function() {
-        let savedTotal = localStorage.getItem("total");
-        
+        let savedTotal = localStorage.getItem("cartTotal");
         if (savedTotal !== null) {
-            $(".cartTot").text(parseFloat(savedTotal).toFixed(2)); // Set total from localStorage
+            $(".cartTot").text(parseFloat(savedTotal).toFixed(2));
         }
     });
+    
     
     
     // Update total when quantity changes
@@ -517,11 +516,15 @@ function loadCartFromLocalStorage() {
     }
 }
 
-// Call this function when the page loads to check for saved cart data
 $(document).ready(function() {
-    // Check if there's cart data saved in localStorage and load it
+    
     loadCartFromLocalStorage();
 });
+
+
+
+// Call this function when the page loads to check for saved cart data
+
 // Function to retrieve data from localStorage (if needed)
 /*function loadCartFromLocalStorage() {
     const cartData = localStorage.getItem('cartProducts');
