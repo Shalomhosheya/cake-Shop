@@ -1,3 +1,4 @@
+
 (function ($) {
     "use strict";
 
@@ -399,21 +400,70 @@ function populateCartTable(products) {
         const productRow = `
             <tr class="table-body-row" data-index="${index}">
                 <td class="product-remove">
-                    <button class="remove-product" id="removeBTN" data-id="${product.id}" data-index="${index}">Remove</button> <!-- Remove product button -->
+                    <button class="remove-product" data-id="${product.id}" data-index="${index}">Remove</button> 
                 </td>
-                <td class="product-name">${product.productName}</td> <!-- Set the product name -->
-                <td class="product-price">Rs ${product.price.toFixed(2)}</td> <!-- Set the product price -->
+                <td class="product-name">${product.productName}</td>
+                <td class="product-price">Rs ${product.price.toFixed(2)}</td>
                 <td class="product-quantity">
-                    <input type="number" class="quantity-input" value="1" min="1" data-index="${index}" data-price="${product.price.toFixed(2)}"> <!-- Create formula when increasing amount -->
+                    <input type="number" class="quantity-input" value="1" min="1" data-index="${index}" data-price="${product.price.toFixed(2)}">
                 </td>
-                <td class="product-total">Rs ${product.price.toFixed(2)}</td> <!-- Total initially same as price -->
+                <td class="product-total">Rs ${product.price.toFixed(2)}</td> 
             </tr>
         `;
-
-        // Append the new row to the table body
         $('.cart-table tbody').append(productRow);
     });
-
+    
+    function calculateTotal() {
+        var total = 0;
+        $(".product-total").each(function() {
+            let priceText = $(this).text().replace("Rs ", ""); // Fix NaN issue
+            let price = parseFloat(priceText);
+    
+            if (!isNaN(price)) { 
+                total += price;
+            }
+        });
+    
+        // Store total in localStorage
+        localStorage.setItem("total", total);
+    
+        // Update the UI
+        $(".cartTot").text(total.toFixed(2));
+    }
+    
+    // Load total from localStorage when page loads
+    $(document).ready(function() {
+        let savedTotal = localStorage.getItem("total");
+        
+        if (savedTotal !== null) {
+            $(".cartTot").text(parseFloat(savedTotal).toFixed(2)); // Set total from localStorage
+        }
+    });
+    
+    
+    // Update total when quantity changes
+    $(document).on("input", ".quantity-input", function() {
+        let quantity = $(this).val();
+        let price = $(this).data("price");
+        let index = $(this).data("index");
+    
+        if (quantity < 1) {
+            $(this).val(1);
+            quantity = 1;
+        }
+    
+        let newTotal = (quantity * price).toFixed(2);
+        $(`.table-body-row[data-index="${index}"] .product-total`).text(`Rs ${newTotal}`);
+    
+        calculateTotal();
+    });
+    
+    // Remove product from cart
+    $(document).on("click", ".remove-product", function() {
+        $(this).closest("tr").remove();
+        calculateTotal();
+    });
+        
     // Attach click event to the "Remove" buttons
     $('.remove-product').on('click', function() {
         const productId = $(this).data('id'); // Get the product id
@@ -472,8 +522,6 @@ $(document).ready(function() {
     // Check if there's cart data saved in localStorage and load it
     loadCartFromLocalStorage();
 });
-
-
 // Function to retrieve data from localStorage (if needed)
 /*function loadCartFromLocalStorage() {
     const cartData = localStorage.getItem('cartProducts');
