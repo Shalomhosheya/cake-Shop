@@ -1,3 +1,4 @@
+var total;
 
 (function ($) {
     "use strict";
@@ -164,6 +165,7 @@
 
 window.onload = function() {
     document.getElementById("siginform").style.display = "flex";
+    
 };
 
 document.getElementById("closeForm").addEventListener("click", function() {
@@ -304,9 +306,9 @@ $(document).ready(function() {
             contentType: 'application/json',
             success: function(response) {
                 console.log('Success:', response);
-                alert("Product added the Cart")
+                alert("Product added to Cart");
                 setToCartTable(userID);  // Pass userID to the setToCartTable function
-                
+                calculateTotal(); // Call calculateTotal to update the total after product is added
             },
             error: function(xhr, status, error) {
                 console.error('AJAX error:', status, error);
@@ -316,11 +318,13 @@ $(document).ready(function() {
         getAll();
     });
 });
+
+
 // Updated setToCartTable function to send userId as a query parameter
 // Function to fetch cart data and populate the table
 function setToCartTable(userId) {
     $.ajax({
-        url: 'http://localhost:8080/product/' + encodeURIComponent(userId), // Sending userId as part of the URL path
+        url: 'http://localhost:8080/product/' + encodeURIComponent(userId),
         type: 'GET',
         success: function(response) {
             console.log('Cart products for user:', response);
@@ -330,13 +334,16 @@ function setToCartTable(userId) {
 
             // Populate the table with the response data
             populateCartTable(response);
-            
+
+            // After populating the table, calculate the total
+            calculateTotal(); // Ensure the total is calculated after populating the table
         },
         error: function(xhr, status, error) {
             console.error('AJAX error:', status, error);
         }
     });
 }
+
 
 
 
@@ -384,128 +391,10 @@ window.onload = function() {
         document.getElementById("logoutBtn").style.display = "none";
         document.getElementById("accIcon").style.display = "inline"; // Show account icon (for login)
     }
+
+    // Call calculateTotal() on page load
+    calculateTotal();
 };
-
-document.getElementById("logoutBtn").addEventListener("click", function() {
-    localStorage.removeItem("loggedInUser");
-    location.reload(); // Reload page to reset the state
-    document.getElementById("accIcon").style.display = "flex";
-});
-
-
-// Function to populate the cart table
-function populateCartTable(products) {
-    // Clear the existing table body before appending new rows
-    $('.cart-table tbody').empty();
-
-    products.forEach(function(product, index) {
-        const productRow = `
-            <tr class="table-body-row" data-index="${index}">
-                <td class="product-remove">
-                    <button class="remove-product" data-id="${product.id}" data-index="${index}">Remove</button> 
-                </td>
-                <td class="product-name">${product.productName}</td>
-                <td class="product-price">Rs ${product.price.toFixed(2)}</td>
-                <td class="product-quantity">
-                    <input type="number" class="quantity-input" value="1" min="1" data-index="${index}" data-price="${product.price.toFixed(2)}">
-                </td>
-                <td class="product-total">Rs ${product.price.toFixed(2)}</td> 
-            </tr>
-        `;
-        $('.cart-table tbody').append(productRow);
-    });
-    
-    function calculateTotal() {
-        var total = 0;
-        $(".product-total").each(function() {
-            let priceText = $(this).text().replace("Rs ", "");
-            let price = parseFloat(priceText);
-    
-            if (!isNaN(price)) { 
-                total += price;
-            }
-        });
-    
-        localStorage.setItem("cartTotal", total); // Store total in localStorage
-        $(".cartTot").text(total.toFixed(2)); // Update UI
-    }
-    
-    // Load saved total from localStorage
-    $(document).ready(function() {
-        let savedTotal = localStorage.getItem("cartTotal");
-        if (savedTotal !== null) {
-            $(".cartTot").text(parseFloat(savedTotal).toFixed(2));
-        }
-    });
-    
-    
-    
-    // Update total when quantity changes
-    $(document).on("input", ".quantity-input", function() {
-        let quantity = $(this).val();
-        let price = $(this).data("price");
-        let index = $(this).data("index");
-    
-        if (quantity < 1) {
-            $(this).val(1);
-            quantity = 1;
-        }
-    
-        let newTotal = (quantity * price).toFixed(2);
-        $(`.table-body-row[data-index="${index}"] .product-total`).text(`Rs ${newTotal}`);
-    
-        calculateTotal();
-    });
-    
-    // Remove product from cart
-    $(document).on("click", ".remove-product", function() {
-        $(this).closest("tr").remove();
-        calculateTotal();
-    });
-        
-    // Attach click event to the "Remove" buttons
-    $('.remove-product').on('click', function() {
-        const productId = $(this).data('id'); // Get the product id
-        const productIndex = $(this).data('index'); // Get the index of the product to remove
-
-        // Get the current cart data from localStorage
-        let cartProducts = JSON.parse(localStorage.getItem('cartProducts')) || [];
-
-        // Remove the product from the cart in localStorage
-        cartProducts.splice(productIndex, 1);
-
-        // Update localStorage with the modified cart data
-        localStorage.setItem('cartProducts', JSON.stringify(cartProducts));
-
-        // Repopulate the cart table with the updated cart data
-        populateCartTable(cartProducts);
-
-        // Send a DELETE request to the server to remove the product from the database
-        $.ajax({
-            url: 'http://localhost:8080/product/' + encodeURIComponent(productId), // Send the product ID to delete
-            type: 'DELETE',
-            success: function(response) {
-                console.log('Product deleted successfully from the database');
-            },
-            error: function(xhr, status, error) {
-                console.error('AJAX error:', status, error);
-            }
-        });
-    });
-
-    // Attach change event to the quantity input
-    $('.quantity-input').on('input', function() {
-        const index = $(this).data('index'); // Get the index of the product
-        const price = parseFloat($(this).data('price')); // Get the price of the product
-        const quantity = parseInt($(this).val()); // Get the selected quantity
-        const newTotal = price * quantity; // Calculate the new total
-
-        // Update the total price for this product in the table
-        $(this).closest('tr').find('.product-total').text('Rs ' + newTotal.toFixed(2));
-    });
-}
-
-
 // Function to load cart data from localStorage on page load
 function loadCartFromLocalStorage() {
     const storedCart = localStorage.getItem('cartProducts');
@@ -521,67 +410,66 @@ $(document).ready(function() {
     loadCartFromLocalStorage();
 });
 
+// Move this function to the global scope
+function calculateTotal() {
+    let total = 0;
+    $(".product-total").each(function() {
+        let priceText = $(this).text().replace("Rs ", "");
+        let price = parseFloat(priceText);
 
+        if (!isNaN(price)) { 
+            total += price;
+        }
+    });
 
-// Call this function when the page loads to check for saved cart data
+    localStorage.setItem("cartTotal", total); // Store total in localStorage
+    $(".cartTot").text(total.toFixed(2)); // Update UI
+}
+function populateCartTable(products) {
+    // Clear the existing table body before appending new rows
+    $('.cart-table tbody').empty();
 
-// Function to retrieve data from localStorage (if needed)
-/*function loadCartFromLocalStorage() {
-    const cartData = localStorage.getItem('cartProducts');
-    if (cartData) {
-        const products = JSON.parse(cartData);
-        products.forEach(function(product) {
-            const productRow = `
-                <tr class="table-body-row">
-                    <td class="product-remove">
-<!--                        <a href="#"><i class="far fa-window-close"></i></a>-->
-                         <button id="removeBTN">Remove</button>
-                    </td>
-                    <td class="product-name">${product.productName}</td>
-                    <td class="product-price">${product.price}</td>
-                    <td class="product-quantity">
-                        <input type="number" placeholder="0">
-                    </td>
-                    <td class="product-total"></td>
-                </tr>
-            `;
+    products.forEach(function(product, index) {
+        const productRow = `
+            <tr class="table-body-row" data-index="${index}">
+                <td class="product-remove">
+                    <button class="remove-product" data-id="${product.id}" data-index="${index}">Remove</button> 
+                </td>
+                
+                
+                <td class="product-name">${product.productName}</td>
+                <td class="product-price">Rs ${product.price.toFixed(2)}</td>
+                <td class="product-quantity">
+                    <input type="number" class="quantity-input" value="1" min="1" data-index="${index}" data-price="${product.price.toFixed(2)}">
+                </td>
+                <td class="product-total">Rs ${product.price.toFixed(2)}</td> 
+            </tr>
+        `;
+        $('.cart-table tbody').append(productRow);
+    });
 
-            // Append the product row to the table
-            $('.cart-table tbody').append(productRow);
-        });
+    // Call the global calculateTotal() function
+    calculateTotal();
+}
+$(document).on("input", ".quantity-input", function() {
+    let quantity = $(this).val();
+    let price = $(this).data("price");
+    let index = $(this).data("index");
+
+    if (quantity < 1) {
+        $(this).val(1);
+        quantity = 1;
     }
-}*/
 
+    let newTotal = (quantity * price).toFixed(2);
+    $(`.table-body-row[data-index="${index}"] .product-total`).text(`Rs ${newTotal}`);
 
-
-
-
-
-
-
-
-
-
-
-
-
-// Example of login button click (if needed)
-/*
-document.getElementById("loginBtn").addEventListener("click", function() {
-    // Show login form or redirect to login page
-    document.getElementById("siginform").style.display = "flex";
+    calculateTotal(); // Call the global calculateTotal() function
 });
-*/
-
-
-
-
-
-
-
-
-
-
+$(document).on("click", ".remove-product", function() {
+    $(this).closest("tr").remove();
+    calculateTotal(); // Call the global calculateTotal() function
+});
 
 document.addEventListener('DOMContentLoaded', function () {
     // For desktop view account icon
@@ -597,3 +485,5 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+
+calculateTotal();//this method is not called when i click the defaultclick button
