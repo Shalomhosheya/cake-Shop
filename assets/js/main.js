@@ -472,11 +472,25 @@ $(document).on("click", ".remove-product", function() {
     let storedCart = JSON.parse(localStorage.getItem('cartProducts'));
     storedCart.splice(index, 1); // Remove the product at the specified index
     localStorage.setItem('cartProducts', JSON.stringify(storedCart)); // Update local storage
-
+    deleteProduct();
     row.remove(); // Remove the row from the UI
     calculateTotal(); // Update the cart total
 });
-
+function deleteProduct(){
+    console.log("Product deleted");
+   var id = localStorage.getItem('productID'); 
+    $.ajax({
+        url: 'http://localhost:8080/product/' + encodeURIComponent(id),
+        type: 'DELETE',
+        success: function(response) {
+            console.log('Product deleted:', response);
+            localStorage.removeItem('productID'); 
+        },
+        error: function(xhr, status, error) {
+            console.error('AJAX error:', status, error);
+        }
+    });
+}
 document.addEventListener('DOMContentLoaded', function () {
     // For desktop view account icon
     document.getElementById("accIcon").addEventListener("click", function () {
