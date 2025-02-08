@@ -305,10 +305,14 @@ $(document).ready(function() {
             }),
             contentType: 'application/json',
             success: function(response) {
-                console.log('Success:', response);
+                console.log('Success:', response.id);
+                localStorage.setItem('productID', response.id);
+                var product = localStorage.getItem('productID');
+                console.log("product ID",product);
+                
                 alert("Product added to Cart");
-                setToCartTable(userID);  // Pass userID to the setToCartTable function
-                calculateTotal(); // Call calculateTotal to update the total after product is added
+                setToCartTable(userID);  
+                calculateTotal(); 
             },
             error: function(xhr, status, error) {
                 console.error('AJAX error:', status, error);
@@ -335,7 +339,6 @@ function setToCartTable(userId) {
             // Populate the table with the response data
             populateCartTable(response);
 
-            // After populating the table, calculate the total
             calculateTotal(); // Ensure the total is calculated after populating the table
         },
         error: function(xhr, status, error) {
@@ -343,10 +346,6 @@ function setToCartTable(userId) {
         }
     });
 }
-
-
-
-
 
 function checkIfLoggedIn() {
     const loggedInUser = localStorage.getItem("loggedInUser");
@@ -425,6 +424,7 @@ function calculateTotal() {
     localStorage.setItem("cartTotal", total); // Store total in localStorage
     $(".cartTot").text(total.toFixed(2)); // Update UI
 }
+
 function populateCartTable(products) {
     // Clear the existing table body before appending new rows
     $('.cart-table tbody').empty();
@@ -435,8 +435,6 @@ function populateCartTable(products) {
                 <td class="product-remove">
                     <button class="remove-product" data-id="${product.id}" data-index="${index}">Remove</button> 
                 </td>
-                
-                
                 <td class="product-name">${product.productName}</td>
                 <td class="product-price">Rs ${product.price.toFixed(2)}</td>
                 <td class="product-quantity">
@@ -448,7 +446,6 @@ function populateCartTable(products) {
         $('.cart-table tbody').append(productRow);
     });
 
-    // Call the global calculateTotal() function
     calculateTotal();
 }
 $(document).on("input", ".quantity-input", function() {
@@ -467,8 +464,17 @@ $(document).on("input", ".quantity-input", function() {
     calculateTotal(); // Call the global calculateTotal() function
 });
 $(document).on("click", ".remove-product", function() {
-    $(this).closest("tr").remove();
-    calculateTotal(); // Call the global calculateTotal() function
+    let row = $(this).closest("tr");
+    let productId = $(this).data("id"); // Get product ID from the clicked button
+    let index = $(this).data("index"); // Get index from the clicked button
+
+    // Remove the product from local storage
+    let storedCart = JSON.parse(localStorage.getItem('cartProducts'));
+    storedCart.splice(index, 1); // Remove the product at the specified index
+    localStorage.setItem('cartProducts', JSON.stringify(storedCart)); // Update local storage
+
+    row.remove(); // Remove the row from the UI
+    calculateTotal(); // Update the cart total
 });
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -486,4 +492,4 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
-calculateTotal();//this method is not called when i click the defaultclick button
+calculateTotal();
